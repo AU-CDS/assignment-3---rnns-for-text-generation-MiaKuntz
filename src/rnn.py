@@ -62,8 +62,10 @@ def main():
     total_words, predictors, label, max_sequence_len = process_data()
     # creating and training model
     history = model_training(max_sequence_len, total_words, predictors, label)
-    # saving trained model
+    # saving trained model (IS IT MODEL OR HISTORY WE SHOULD SAVE?)
     dump(history, "out/rnn_model.joblib")
+    # or ???
+    tf.keras.saving.save_model(model, filepath, overwrite=True, save_format=None, **kwargs)
 
 if __name__=="__main__":
     main()

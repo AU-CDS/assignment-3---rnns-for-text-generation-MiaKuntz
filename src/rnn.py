@@ -15,8 +15,6 @@ import utils.requirement_functions as rf
 import warnings
 warnings.filterwarnings("ignore")
 warnings.simplefilter(action='ignore', category=FutureWarning)
-# saving
-from joblib import dump
 
 # defining loading data, preprocessing, tokenizing and padding
 def process_data(): 
@@ -54,18 +52,17 @@ def model_training(sequence_legth, all_words, predict, y):
                         epochs=100,
                         batch_size=128, 
                         verbose=1) 
-    return history
+    return model
 
 # creating the main function
 def main():
     # processing data
     total_words, predictors, label, max_sequence_len = process_data()
     # creating and training model
-    history = model_training(max_sequence_len, total_words, predictors, label)
-    # saving trained model (IS IT MODEL OR HISTORY WE SHOULD SAVE?)
-    dump(history, "out/rnn_model.joblib")
-    # or ???
-    tf.keras.saving.save_model(model, filepath, overwrite=True, save_format=None, **kwargs)
+    model = model_training(max_sequence_len, total_words, predictors, label)
+    # saving trained model
+    outpath = os.path.join("../out/rnn_model.joblib")
+    tf.keras.saving.save_model(model, outpath, overwrite=True, save_format=None)
 
 if __name__=="__main__":
     main()

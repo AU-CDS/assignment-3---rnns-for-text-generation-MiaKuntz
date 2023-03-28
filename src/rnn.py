@@ -29,7 +29,10 @@ def process_data():
             all_comments.extend(list(comments_df["commentBody"].values))
     # cleaning out data set and creating corpus
     all_comments = [c for c in all_comments if c != "Unknown"]
-    corpus = [rf.clean_text(x) for x in all_comments]
+    # create sample from all_comments
+    import random
+    sample_comments = random.sample(all_comments, 10)
+    corpus = [rf.clean_text(x) for x in sample_comments]
     # tokenizing
     tokenizer = Tokenizer()
     # creating tokens
@@ -39,19 +42,19 @@ def process_data():
     # transforming tokens into numerical output
     inp_sequences = rf.get_sequence_of_tokens(tokenizer, corpus)
     # padding sequences
-    predictors, label, max_sequence_len = rf.generate_padded_sequences(inp_sequences)
+    predictors, label, max_sequence_len = rf.generate_padded_sequences(inp_sequences, total_words)
     return total_words, predictors, label, max_sequence_len
 
 # defining model and training
-def model_training(sequence_legth, all_words, predict, y):
+def model_training(sequence_length, all_words, predict, y):
     # initializing model
-    model = rf.create_model(sequence_legth, all_words)
+    model = rf.create_model(sequence_length, all_words)
     # fitting model
-    history = model.fit(predict, 
-                        y, 
-                        epochs=100,
-                        batch_size=128, 
-                        verbose=1) 
+    model.fit(predict, 
+              y, 
+              epochs=100,
+              batch_size=128, 
+              verbose=1) 
     return model
 
 # creating the main function
@@ -61,14 +64,8 @@ def main():
     # creating and training model
     model = model_training(max_sequence_len, total_words, predictors, label)
     # saving trained model
-    outpath = os.path.join("../out/rnn_model.joblib")
+    outpath = os.path.join("model/rnn_model.keras")
     tf.keras.saving.save_model(model, outpath, overwrite=True, save_format=None)
 
 if __name__=="__main__":
     main()
-
-
-
-
-
-

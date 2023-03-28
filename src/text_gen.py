@@ -1,5 +1,3 @@
-# loading
-from joblib import load
 # importing helper functions
 import sys
 sys.path.append(".")
@@ -8,7 +6,7 @@ import utils.requirement_functions as rf
 import tensorflow as tf
 
 # importing trained model
-new_model = tf.keras.models.load_model("./out/rnn_model.joblib")
+loaded_model = tf.keras.saving.load_model("model/rnn_model.keras")
 
 # generating text ????
-print(rf.generate_text("danish", 5, new_model, max_sequence_len))
+print(rf.generate_text("danish", 5, loaded_model, max_sequence_len))

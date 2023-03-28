@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # data processing tools
-import string, os 
-import pandas as pd
+import string
 import numpy as np
 np.random.seed(42)
 # keras module for building LSTM 
@@ -9,13 +8,12 @@ import tensorflow as tf
 tf.random.set_seed(42)
 import tensorflow.keras.utils as ku 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 
 def clean_text(txt):
-    txt = "".join(v for v in txt if v not in string.punctuation).lower() # make all text lowercase, keep strings that arent punctuation
-    txt = txt.encode("utf8").decode("ascii",'ignore') # utf8 encoding makes up for accents
+    txt = "".join(v for v in txt if v not in string.punctuation).lower() 
+    txt = txt.encode("utf8").decode("ascii",'ignore') 
     return txt 
 
 def get_sequence_of_tokens(tokenizer, corpus):
@@ -28,7 +26,7 @@ def get_sequence_of_tokens(tokenizer, corpus):
             input_sequences.append(n_gram_sequence)
     return input_sequences
 
-def generate_padded_sequences(input_sequences):
+def generate_padded_sequences(input_sequences, total_words):
     # get the length of the longest sequence
     max_sequence_len = max([len(x) for x in input_sequences])
     # make every sequence the length of the longest on
@@ -58,7 +56,7 @@ def create_model(max_sequence_len, total_words):
                     optimizer='adam')
     return model
 
-def generate_text(seed_text, next_words, model, max_sequence_len):
+def generate_text(tokenizer, seed_text, next_words, model, max_sequence_len):
     for _ in range(next_words):
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
         token_list = pad_sequences([token_list], 

@@ -29,7 +29,7 @@ def file_path():
 
 # defining function for generating text
 def text_generating(ld_model, max_seq_len):
-    tokenizer_path = os.path.join("model/tokenizer.joblib")
+    tokenizer_path = os.path.join("models/tokenizer.joblib")
     tokenizer = load(tokenizer_path)
     text_gen = rf.generate_text(tokenizer, "danish", 5, ld_model, max_seq_len)
     return text_gen

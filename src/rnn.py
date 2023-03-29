@@ -67,10 +67,10 @@ def main():
     # creating and training model
     model = model_training(max_sequence_len, total_words, predictors, label)
     # saving trained model
-    outpath = os.path.join(f"model/rnn-model_seq{max_sequence_len}.keras")
+    outpath = os.path.join(f"models/rnn-model_seq{max_sequence_len}.keras")
     tf.keras.models.save_model(model, outpath, overwrite=True, save_format=None)
     # saving tokenizer
-    dump(tokenizer, "model/tokenizer.joblib")
+    dump(tokenizer, "models/tokenizer.joblib")
 
 if __name__=="__main__":
     main()

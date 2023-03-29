@@ -15,6 +15,10 @@ import utils.requirement_functions as rf
 import warnings
 warnings.filterwarnings("ignore")
 warnings.simplefilter(action='ignore', category=FutureWarning)
+# importing random
+import random
+# saving tokenizer
+from joblib import dump
 
 # defining loading data, preprocessing, tokenizing and padding
 def process_data(): 
@@ -30,7 +34,6 @@ def process_data():
     # cleaning out data set and creating corpus
     all_comments = [c for c in all_comments if c != "Unknown"]
     # create sample from all_comments
-    import random
     sample_comments = random.sample(all_comments, 10)
     corpus = [rf.clean_text(x) for x in sample_comments]
     # tokenizing
@@ -43,7 +46,7 @@ def process_data():
     inp_sequences = rf.get_sequence_of_tokens(tokenizer, corpus)
     # padding sequences
     predictors, label, max_sequence_len = rf.generate_padded_sequences(inp_sequences, total_words)
-    return total_words, predictors, label, max_sequence_len
+    return tokenizer, total_words, predictors, label, max_sequence_len
 
 # defining model and training
 def model_training(sequence_length, all_words, predict, y):
@@ -60,12 +63,14 @@ def model_training(sequence_length, all_words, predict, y):
 # creating the main function
 def main():
     # processing data
-    total_words, predictors, label, max_sequence_len = process_data()
+    tokenizer, total_words, predictors, label, max_sequence_len = process_data()
     # creating and training model
     model = model_training(max_sequence_len, total_words, predictors, label)
     # saving trained model
-    outpath = os.path.join("model/rnn_model.keras")
-    tf.keras.saving.save_model(model, outpath, overwrite=True, save_format=None)
+    outpath = os.path.join(f"model/rnn-model_seq{max_sequence_len}.keras")
+    tf.keras.models.save_model(model, outpath, overwrite=True, save_format=None)
+    # saving tokenizer
+    dump(tokenizer, "model/tokenizer.joblib")
 
 if __name__=="__main__":
     main()

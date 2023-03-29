@@ -17,10 +17,10 @@ warnings.filterwarnings("ignore")
 warnings.simplefilter(action='ignore', category=FutureWarning)
 # importing random
 import random
-# saving tokenizer
+# joblib
 from joblib import dump
 
-# defining loading data, preprocessing, tokenizing and padding
+# defining loading data, preprocessing, tokenizing, and padding function
 def process_data(): 
     # creating directory path
     data_dir = os.path.join("in/news_data")
@@ -28,27 +28,31 @@ def process_data():
     all_comments = []
     # creating for loop for loading data
     for filename in os.listdir(data_dir):
+        # choosing only data files with "Comments" in title
         if 'Comments' in filename:
+            # read in the chosen files
             comments_df = pd.read_csv(data_dir + "/" + filename)
+            # creating list of chosen "commentBody" column
             all_comments.extend(list(comments_df["commentBody"].values))
-    # cleaning out data set and creating corpus
+    # sorting out missing data
     all_comments = [c for c in all_comments if c != "Unknown"]
-    # create sample from all_comments
+    # creating random sample from all_comments
     sample_comments = random.sample(all_comments, 10)
+    # cleaning out data set and creating corpus
     corpus = [rf.clean_text(x) for x in sample_comments]
     # tokenizing
     tokenizer = Tokenizer()
-    # creating tokens
+    # creating tokens based on corpus
     tokenizer.fit_on_texts(corpus)
     # creating sequence of tokens
     total_words = len(tokenizer.word_index) + 1 
-    # transforming tokens into numerical output
+    # transforming tokens into a numerical output
     inp_sequences = rf.get_sequence_of_tokens(tokenizer, corpus)
     # padding sequences
     predictors, label, max_sequence_len = rf.generate_padded_sequences(inp_sequences, total_words)
     return tokenizer, total_words, predictors, label, max_sequence_len
 
-# defining model and training
+# defining model and training function
 def model_training(sequence_length, all_words, predict, y):
     # initializing model
     model = rf.create_model(sequence_length, all_words)
@@ -60,17 +64,17 @@ def model_training(sequence_length, all_words, predict, y):
               verbose=1) 
     return model
 
-# creating the main function
+# creating main function
 def main():
     # processing data
     tokenizer, total_words, predictors, label, max_sequence_len = process_data()
     # creating and training model
     model = model_training(max_sequence_len, total_words, predictors, label)
+    # saving tokenizer
+    dump(tokenizer, "models/tokenizer.joblib")
     # saving trained model
     outpath = os.path.join(f"models/rnn-model_seq{max_sequence_len}.keras")
     tf.keras.models.save_model(model, outpath, overwrite=True, save_format=None)
-    # saving tokenizer
-    dump(tokenizer, "models/tokenizer.joblib")
 
 if __name__=="__main__":
     main()

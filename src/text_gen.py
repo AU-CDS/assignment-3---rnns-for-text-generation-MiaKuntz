@@ -7,16 +7,16 @@ import utils.requirement_functions as rf
 import tensorflow as tf
 # argparse
 import argparse
-# loading tokenizer
+# joblib
 from joblib import load
 
 # defining filepath function
-def file_path():
-    # initialize the parser
+def file_paths():
+    # initializing parser
     parser = argparse.ArgumentParser()
-    # add arguments
+    # adding arguments
     parser.add_argument("--filename")
-    # parse the argument from command line
+    # parsing argument from command line
     args = parser.parse_args()
     # defining filename
     filename = args.filename
@@ -29,16 +29,19 @@ def file_path():
 
 # defining function for generating text
 def text_generating(ld_model, max_seq_len):
+    # defining filepath
     tokenizer_path = os.path.join("models/tokenizer.joblib")
+    # loading tokenizer
     tokenizer = load(tokenizer_path)
+    # defining text generating
     text_gen = rf.generate_text(tokenizer, "danish", 5, ld_model, max_seq_len)
     return text_gen
 
 # creating the main function
 def main():
     # processing file
-    loaded_model, max_sequence_len = file_path()
-    # generating text
+    loaded_model, max_sequence_len = file_paths()
+    # generating text and printing
     text_gen = text_generating(loaded_model, max_sequence_len)
     print(text_gen)
 

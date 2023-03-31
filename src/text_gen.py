@@ -10,40 +10,41 @@ import argparse
 # joblib
 from joblib import load
 
-# defining filepath function
-def file_paths():
+# defining parsers
+def input_parse():
     # initializing parser
     parser = argparse.ArgumentParser()
     # adding arguments
-    parser.add_argument("--filename")
-    # parsing argument from command line
+    parser.add_argument("--filename", type=str)
+    parser.add_argument("--start_word", type=str, default="danish")
+    parser.add_argument ("--length", type=int, default=5)
+    # parsing arguments from command line
     args = parser.parse_args()
+    return args
+
+# defining models function
+def load_models(args):
     # defining filename
     filename = args.filename
     # importing trained model
-    loaded_model = tf.keras.models.load_model(filename)
-    # defining max sequence length
+    loaded_model = tf.keras.models.load_model(f"models/{filename}")
+    # getting max sequence length from filename
     max_sequence_len = filename.split("_")[1].split("q")[1].split(".")[0]
-    # return arguments
-    return loaded_model, max_sequence_len
-
-# defining function for generating text
-def text_generating(ld_model, max_seq_len):
-    # defining filepath
+    # setting tokenizer path
     tokenizer_path = os.path.join("models/tokenizer.joblib")
     # loading tokenizer
     tokenizer = load(tokenizer_path)
-    # defining text generating
-    text_gen = rf.generate_text(tokenizer, "danish", 5, ld_model, max_seq_len)
-    return text_gen
+    # return arguments
+    return loaded_model, max_sequence_len, tokenizer
 
 # creating the main function
 def main():
+    # arguments
+    args = input_parse()
     # processing file
-    loaded_model, max_sequence_len = file_paths()
-    # generating text and printing
-    text_gen = text_generating(loaded_model, max_sequence_len)
-    print(text_gen)
+    loaded_model, max_sequence_len, tokenizer = load_models(args)
+    # generating text 
+    print(rf.generate_text(tokenizer, args.start_word, args.length, loaded_model, max_sequence_len))
 
 if __name__=="__main__":
     main()

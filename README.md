@@ -1,39 +1,36 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-8d59dc4de5201274e310e4c54b9627a8934c3b88527886e3b421487c677d23eb.svg)](https://classroom.github.com/a/5f7lMH9Y)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-c66648af7eb3fe8bc4f294546bfd86ef473780cde1dea487d3c4ff354943c9ae.svg)](https://classroom.github.com/online_ide?assignment_repo_id=10586312&assignment_repo_type=AssignmentRepo)
 # Assignment 3 - Language modelling and text generation using RNNs
+The assignment focuses on generating text using a trained model and RNN’s. The model will be trained on comments from articles published by The New York Times, and the objective is to first create a script where I train the model, and then create a separate script for generating text based on suggested prompts. 
 
-Text generation is hot news right now!
+## Tasks
+The tasks for this assignment are to:
 
-For this assignemnt, you're going to create some scripts which will allow you to train a text generation model on some culturally significant data - comments on articles for *The New York Times*. You can find a link to the data [here](https://www.kaggle.com/datasets/aashita/nyt-comments).
+-	Train a model for NLP by using TensorFlow,
+-	Load the model and generate text,
+-	Structure my repository in an appropriate manner,
+-	And document my work and workflow for reproducibility
 
-You should create a collection of scripts which do the following:
+## Repository content
+The GitHub repository consists of three folders; The ```src``` folder, which contains the Python script for the RNN model and training, and the script for loading the model and generating text, the ```models``` folder, which contains the trained model and tokenizer, and the ```in``` folder, where the data should be stored after download. Furthermore, the repository contains a ```ReadMe.md``` file, as well as files for ```setup.sh``` and ```requirements.txt```. 
 
-- Train a model on the Comments section of the data
-  - [Save the trained model](https://www.tensorflow.org/api_docs/python/tf/keras/models/save_model)
-- Load a saved model
-  - Generate text from a user-suggested prompt
+## Data
+The data used for this assignment is several files based on articles and comments on them from The New York Times. To use the data in the “rnn.py” script, please do the following:
 
-## Objectives
+-	Download the data via following link:
 
-Language modelling is hard and training text generation models is doubly hard. For this course, we lack somewhat the computationl resources, time, and data to train top-quality models for this task. So, if your RNNs don't perform overwhelmingly, that's fine (and expected). Think of it more as a proof of concept.
+https://www.kaggle.com/datasets/aashita/nyt-comments
 
-- Using TensorFlow to build complex deep learning models for NLP
-- Illustrating that you can structure repositories appropriately
-- Providing clear, easy-to-use documentation for your work.
+-	Import the data to the ```in``` folder in the repository
+-	Optionally, change the name to “news_data” for easier reproducibility, as that is what the folder name will be in the scripts. 
 
-## Some tips
+## Technicalities and how to run the script
+The script and its code is run in VS Code, and uses Python 3.11.1. 
 
-One big thing to be aware of - unlike the classroom notebook, this assignment is working on the *Comments*, not the articles. So two things to consider:
+To run the script please notice, that you will first need to run:
 
-1) The Comments data might be structured differently to the Articles data. You'll need to investigate that;
-2) There are considerably more Comments than articles - plan ahead for model training!
+    bash setup.sh
 
-## Additional pointers
+And then call the scripts independently in the command line to run them. 
 
-- Make sure not to try to push the data to Github!
-- *Do* include the saved models that you output
-- Make sure to structure your repository appropriately
-  - Include a readme explaining relevant info
-    - E.g where does the data come from?
-    - How do I run the code?
-- Make sure to include a requirements file, etc...
+Please note that the ```rnn.py``` script was run with a sample of the corpus, and it is recommended to do the same when running, as the corpus as a whole is quite extensive when included as a whole. This will of course affect how the model is training, but will still be able to show how the code is running. When saving the file, the max sequence length of the model is added to the name, since this value is needed in the script for generating text, and will run automatically.  
+
+Another note to be aware of is that the ```text_gen.py``` script takes several arguments, e.g. filename to be loaded, or in the ```generate_text``` function. The prompt when generating text  can be modified depending on the prompt wished to be run. The example in the published script have “Danish” and “5” as its default and can, as mentioned, be altered to anything else. 

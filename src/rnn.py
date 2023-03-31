@@ -36,10 +36,8 @@ def process_data():
             all_comments.extend(list(comments_df["commentBody"].values))
     # sorting out missing data
     all_comments = [c for c in all_comments if c != "Unknown"]
-    # creating random sample from all_comments
-    sample_comments = random.sample(all_comments, 10)
     # cleaning out data set and creating corpus
-    corpus = [rf.clean_text(x) for x in sample_comments]
+    corpus = [rf.clean_text(x) for x in all_comments]
     # tokenizing
     tokenizer = Tokenizer()
     # creating tokens based on corpus
@@ -74,7 +72,7 @@ def main():
     dump(tokenizer, "models/tokenizer.joblib")
     # saving trained model
     outpath = os.path.join(f"models/rnn-model_seq{max_sequence_len}.keras")
-    tf.keras.models.save_model(model, outpath, overwrite=True, save_format=None)
+    model.save(outpath, overwrite=True, save_format=None)
 
 if __name__=="__main__":
     main()

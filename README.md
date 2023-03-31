@@ -12,7 +12,7 @@ The tasks for this assignment are to:
 ## Repository content
 The GitHub repository consists of three folders; The ```src``` folder, which contains the Python script for the RNN model and training, and the script for loading the model and generating text, the ```models``` folder, which contains the trained model and tokenizer, and the ```in``` folder, where the data should be stored after download. Furthermore, the repository contains a ```ReadMe.md``` file, as well as files for ```setup.sh``` and ```requirements.txt```. 
 
-The models in the models folder were produced by running the script on a representative sample set of the data, and are kept in the folder to show a valid example of the output from the “rnn.py” script. 
+The models in the ```models``` folder were produced by running the script on a representative sample set of the data, and are kept in the folder to show a valid example of the output from the ```rnn.py``` script. 
 
 ## Data
 The data used for this assignment is several files based on articles and comments on them from The New York Times. To use the data in the “rnn.py” script, please do the following:

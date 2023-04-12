@@ -20,7 +20,7 @@ import random
 # joblib
 from joblib import dump
 
-# defining loading data, preprocessing, tokenizing, and padding function
+# defining function for loading data, preprocessing, tokenizing, and padding function
 def process_data(): 
     # creating directory path
     data_dir = os.path.join("in/news_data")

@@ -1,60 +1,70 @@
-# data processing tools
+# Author: Mia Kuntz
+# Date hand-in: 31/5 - 2023
+
+# Description: This script is used to train a model for text generation.
+# The script saves the trained model and tokenizer to the models folder.
+
+# importing operating system 
 import os
+# importing pandas
 import pandas as pd
+# importing numpy
 import numpy as np
+# setting seed
 np.random.seed(42)
-# keras module for building LSTM 
+# importing tensorflow
 import tensorflow as tf
+# setting seed
 tf.random.set_seed(42)
+# importing keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 # importing helper functions
 import sys
 sys.path.append(".")
+# importing utils functions
 import utils.requirement_functions as rf
-# surpress warnings
+# importing warnings
 import warnings
 warnings.filterwarnings("ignore")
 warnings.simplefilter(action='ignore', category=FutureWarning)
-# importing random
-import random
-# joblib
+# importing joblib
 from joblib import dump
 
-# defining function for loading data, preprocessing, tokenizing, and padding function
+# defining function to process data
 def process_data(): 
-    # creating directory path
-    data_dir = os.path.join("in/news_data")
-    # creating empty list
+    # setting data directory
+    data_dir = os.path.join("archive")
+    # creating empty list for comments
     all_comments = []
-    # creating for loop for loading data
+    # looping through files in data directory
     for filename in os.listdir(data_dir):
-        # choosing only data files with "Comments" in title
+        # checking if file is a csv file
         if 'Comments' in filename:
-            # read in the chosen files
+            # reading csv file
             comments_df = pd.read_csv(data_dir + "/" + filename)
-            # creating list of chosen "commentBody" column
+            # appending comments to list
             all_comments.extend(list(comments_df["commentBody"].values))
-    # sorting out missing data
+    # removing unknown comments
     all_comments = [c for c in all_comments if c != "Unknown"]
-    # cleaning out data set and creating corpus
+    # cleaning text
     corpus = [rf.clean_text(x) for x in all_comments]
-    # tokenizing
+    # initializing tokenizer
     tokenizer = Tokenizer()
-    # creating tokens based on corpus
+    # fitting tokenizer
     tokenizer.fit_on_texts(corpus)
-    # creating sequence of tokens
+    # getting total words 
     total_words = len(tokenizer.word_index) + 1 
-    # transforming tokens into a numerical output
+    # getting input sequences 
     inp_sequences = rf.get_sequence_of_tokens(tokenizer, corpus)
-    # padding sequences
+    # padding sequences 
     predictors, label, max_sequence_len = rf.generate_padded_sequences(inp_sequences, total_words)
     return tokenizer, total_words, predictors, label, max_sequence_len
 
-# defining model and training function
+# defining function to train model
 def model_training(sequence_length, all_words, predict, y):
-    # initializing model
+    # creating model
     model = rf.create_model(sequence_length, all_words)
-    # fitting model
+    # compiling model
     model.fit(predict, 
               y, 
               epochs=100,
@@ -66,13 +76,17 @@ def model_training(sequence_length, all_words, predict, y):
 def main():
     # processing data
     tokenizer, total_words, predictors, label, max_sequence_len = process_data()
-    # creating and training model
+    # training model
     model = model_training(max_sequence_len, total_words, predictors, label)
     # saving tokenizer
     dump(tokenizer, "models/tokenizer.joblib")
-    # saving trained model
+    # creating output path
     outpath = os.path.join(f"models/rnn-model_seq{max_sequence_len}.keras")
+    # saving model
     model.save(outpath, overwrite=True, save_format=None)
 
 if __name__=="__main__":
     main()
+
+# Command line argument:
+# python3 rnn.py 

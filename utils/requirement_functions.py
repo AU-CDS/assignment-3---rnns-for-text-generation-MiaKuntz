@@ -21,26 +21,25 @@ def clean_text(txt):
 
 # defining sequence of tokens function
 def get_sequence_of_tokens(tokenizer, corpus):
-    ### converting data to sequence of tokens 
     # creating empty list
     input_sequences = []
-    # loop over each line in corpus
+    # looping over each line in corpus
     for line in corpus:
-        # convert text into list of integer tokens using tokenizer
+        # convertimg text into list of integer tokens using tokenizer
         token_list = tokenizer.texts_to_sequences([line])[0]
         # generating loop range from 1 up to length of token list
         for i in range(1, len(token_list)):
             # generating n-gram sequence
             n_gram_sequence = token_list[:i+1]
-            # appending
+            # appending n-gram sequence to input_sequences
             input_sequences.append(n_gram_sequence)
     return input_sequences
 
 # defining pad sequences function
 def generate_padded_sequences(input_sequences, total_words):
-    # get the length of the longest sequence
+    # getting length of longest sequence
     max_sequence_len = max([len(x) for x in input_sequences])
-    # make every sequence the length of the longest sequence by padding
+    # making every sequence length of longest sequence by padding
     input_sequences = np.array(pad_sequences(input_sequences, 
                                             maxlen=max_sequence_len, 
                                             padding='pre'))
@@ -63,7 +62,7 @@ def create_model(max_sequence_len, total_words):
                         input_length=input_len))
     # adding hidden layer 1 - LSTM layer
     model.add(LSTM(100))
-    # removing 10% of the weight when the model is training
+    # removing 10% of weight when model is training
     model.add(Dropout(0.1))
     # adding output layer
     model.add(Dense(total_words, 
@@ -77,13 +76,13 @@ def create_model(max_sequence_len, total_words):
 def generate_text(tokenizer, seed_text, next_words, model, max_sequence_len):
     # creating iterating loop
     for _ in range(next_words):
-        # tokenizing text
+        # tokenizing text into list of tokens
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
-        # padding list
+        # padding list of tokens
         token_list = pad_sequences([token_list], 
                                     maxlen=int(max_sequence_len)-1, 
                                     padding='pre')
-        # predicting 
+        # predicting next word
         predicted = np.argmax(model.predict(token_list),
                                             axis=1)   
         # initializing empty string
@@ -92,8 +91,9 @@ def generate_text(tokenizer, seed_text, next_words, model, max_sequence_len):
         for word,index in tokenizer.word_index.items():
             # checking if current word in index matches predicted
             if index == predicted:
+                # assigning word to output_word
                 output_word = word
                 break
-        # appending
+        # appending output_word to seed_text
         seed_text += " "+output_word
     return seed_text.title()

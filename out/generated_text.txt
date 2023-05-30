@@ -1,0 +1,9 @@
+Arguments: --filename rnn-model_seq198.keras --start_word New --length 10
+Generated Text: New About That That The Trump To The Us Us Us
+
+Arguments: --filename rnn-model_seq198.keras --start_word What --length 5
+Generated Text: What To The Trump To The
+
+Arguments: --filename rnn-model_seq198.keras --start_word American --length 5
+Generated Text: American That That That That The
+

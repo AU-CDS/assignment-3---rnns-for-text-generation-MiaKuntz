@@ -30,7 +30,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # importing joblib
 from joblib import dump
 
-# defining function to process data
 def process_data(): 
     # setting data directory
     data_dir = os.path.join("archive")
